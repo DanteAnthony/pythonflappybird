@@ -23,7 +23,7 @@ ground_scroll = 0
 scroll_speed = 4
 flying = False
 game_over = False
-pipe_gap = 150
+pipe_gap = 170
 pipe_freq = 1500 #milliseconds
 last_pipe = pygame.time.get_ticks() - pipe_freq
 score = 0
@@ -44,6 +44,10 @@ def reset_game():
     pipe_group.empty()
     flappy.rect.x = 100
     flappy.rect.y = int(screen_height / 2)
+    flappy.vel = 0
+    global game_over, flying, score
+    game_over = False
+    flying = False
     score = 0
     return score
 
@@ -68,17 +72,14 @@ class Bird(pygame.sprite.Sprite):
 
         if flying == True: 
             # gravity
-            self.vel += 0.5
-            if self.vel > 10:
-                self.vel = 10
-            if self.rect.bottom < 768:
-                self.rect.y += int(self.vel)
+            self.apply_gravity()
+        
         if game_over == False:
             # jump
-            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+            if pygame.key.get_pressed()[K_SPACE] == 1 and self.clicked == False:
                 self.clicked = True
                 self.vel = -10
-            if pygame.mouse.get_pressed()[0] == 0:
+            if pygame.key.get_pressed()[K_SPACE] == 0:
                 self.clicked = False
 
             # handle animation
@@ -96,6 +97,14 @@ class Bird(pygame.sprite.Sprite):
             self.image = pygame.transform.rotate(self.images[self.index], self.vel * -2)
         else:
             self.image = pygame.transform.rotate(self.images[self.index], -90)
+    
+    def apply_gravity(self):
+        self.vel += 0.5
+        if self.vel > 10:
+            self.vel = 10
+        self.rect.y += int(self.vel)
+        if self.rect.bottom < 768:
+                self.rect.y += int(self.vel)
 
 # Pipe class
 class Pipe(pygame.sprite.Sprite):
@@ -217,7 +226,7 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-        if event.type == pygame.MOUSEBUTTONDOWN and flying == False and game_over == False:
+        if event.type == pygame.KEYDOWN and flying == False and game_over == False:
             flying = True
 
     pygame.display.update()
