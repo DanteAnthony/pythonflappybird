@@ -103,8 +103,6 @@ class Bird(pygame.sprite.Sprite):
         if self.vel > 10:
             self.vel = 10
         self.rect.y += int(self.vel)
-        if self.rect.bottom < 768:
-                self.rect.y += int(self.vel)
 
 # Pipe class
 class Pipe(pygame.sprite.Sprite):
