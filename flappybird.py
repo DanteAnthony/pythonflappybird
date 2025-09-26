@@ -227,6 +227,6 @@ while run:
         if event.type == pygame.KEYDOWN and flying == False and game_over == False:
             flying = True
 
-    pygame.display.update()
+    pygame.display.flip()
 
 pygame.quit()
