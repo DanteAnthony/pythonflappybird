@@ -186,6 +186,10 @@ while run:
 
     draw_text(str(score), font, white, int(screen_width / 2), 20)
 
+    if score >= 100:
+        draw_text(str("You Win"), font, white, 350, 300)
+        game_over = True
+
     # look for collision
     if pygame.sprite.groupcollide(bird_group, pipe_group, False, False) or flappy.rect.top < 0:
         game_over = True
