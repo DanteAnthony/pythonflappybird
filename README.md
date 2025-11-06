@@ -1,2 +1,2 @@
 Download the img folder and pygame for VS code
-the img folder have to be in the same folder
+The img folder and flappybird.py have to be in the same folder
