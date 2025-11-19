@@ -30,9 +30,9 @@ score = 0
 pass_pipe = False
 
 # load images
-bg = pygame.image.load('pythonflappybird/img/bg.png').convert_alpha()
-ground_img = pygame.image.load('pythonflappybird/img/ground.png').convert_alpha()
-button_img = pygame.image.load('pythonflappybird/img/restart.png').convert_alpha()
+bg = pygame.image.load('img/bg.png').convert_alpha()
+ground_img = pygame.image.load('img/ground.png').convert_alpha()
+button_img = pygame.image.load('img/restart.png').convert_alpha()
 
 # Score Func
 def draw_text(text, font, text_col, x, y):
@@ -60,7 +60,7 @@ class Bird(pygame.sprite.Sprite):
         self.index = 0
         self.counter = 0
         for num in range(1, 4):
-            img = pygame.image.load(f'pythonflappybird/img/bird{num}.png').convert_alpha()
+            img = pygame.image.load(f'img/bird{num}.png').convert_alpha()
             self.images.append(img)
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
@@ -108,7 +108,7 @@ class Bird(pygame.sprite.Sprite):
 class Pipe(pygame.sprite.Sprite):
     def __init__(self, x, y, position):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('pythonflappybird/img/pipe.png').convert_alpha()
+        self.image = pygame.image.load('img/pipe.png').convert_alpha()
         self.rect = self.image.get_rect()
         # position 1 is top, -1 is bottom
         if position == 1:
