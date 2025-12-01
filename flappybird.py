@@ -182,7 +182,7 @@ while run:
             pass_pipe = True
         if pass_pipe == True:
             if bird_group.sprites()[0].rect.left > pipe_group.sprites()[0].rect.right:
-                score += 100
+                score += 1
                 pass_pipe = False
 
     draw_text(str(score), font1, white, int(SCREEN_WIDTH / 2) - 55, 20)
