@@ -16,7 +16,7 @@ pygame.display.set_caption('Flappy Bird')
 
 # define score text
 font1 = pygame.font.SysFont('Flappy Bird Font', 60)
-font2 = pygame.font.SysFont('FlappyBirdy', 120)
+font2 = pygame.font.SysFont('Flappy Bird', 120)
 white = (255, 255, 255)
 
 # define game variables
@@ -28,6 +28,7 @@ pipe_gap = 170
 pipe_freq = 1500 #milliseconds
 last_pipe = pygame.time.get_ticks() - pipe_freq
 score = 0
+coin_score = []
 pass_pipe = False
 
 # load images
@@ -43,6 +44,8 @@ def draw_text(text, font, text_col, x, y):
 # define reset game
 def reset_game():
     pipe_group.empty()
+    coin_group.empty()
+    coin_score.clear()
     flappy.rect.x = 100
     flappy.rect.y = int(SCREEN_HEIGHT / 2)
     flappy.vel = 0
@@ -146,10 +149,22 @@ class Button():
         SCREEN.blit(self.image, (self.rect.x, self.rect.y))
 
         return action
+    
+class Coin(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('img/Coin.png').convert_alpha()
+        self.rect = self.image.get_rect(center = [x, y])
+    
+    def update(self):
+        self.rect.x -= scroll_speed
+        if self.rect.right < 0:
+            self.kill()
 
 # groups
 bird_group = pygame.sprite.Group()
 pipe_group = pygame.sprite.Group()
+coin_group = pygame.sprite.Group()
 
 # add flappy to group
 flappy = Bird(100, int(SCREEN_HEIGHT / 2))
@@ -170,6 +185,7 @@ while run:
     bird_group.draw(SCREEN)
     bird_group.update()
     pipe_group.draw(SCREEN)
+    coin_group.draw(SCREEN)
 
     # draw ground
     SCREEN.blit(ground_img, (ground_scroll, 768))
@@ -186,14 +202,23 @@ while run:
                 pass_pipe = False
 
     draw_text(str(score), font1, white, int(SCREEN_WIDTH / 2) - 55, 20)
+    draw_text(str(len(coin_score)), font1, white, 100, 20)
 
     if score >= 100:
-        draw_text(str("You Win"), font2, white, int(SCREEN_WIDTH / 2) - 115, 275)
+        draw_text(str("You Win"), font2, white, int(SCREEN_WIDTH / 2) - 150, 275)
+        if len(coin_score) == 1:
+            draw_text(str(f"You got {len(coin_score)} coin"), font2, white, int(SCREEN_WIDTH / 2) - 300, 400)
+        else:
+            draw_text(str(f"You got {len(coin_score)} coins"), font2, white, int(SCREEN_WIDTH / 2) - 300, 400)
         game_over = True
 
-    # look for collision
+    # look for collision pipe
     if pygame.sprite.groupcollide(bird_group, pipe_group, False, False) or flappy.rect.top < 0:
         game_over = True
+
+    if pygame.sprite.groupcollide(bird_group, coin_group, False, True):
+        i = 1
+        coin_score.append(i)
 
     # check if bird has hit ground
     if flappy.rect.bottom >= 768:
@@ -210,6 +235,8 @@ while run:
             top_pipe = Pipe(SCREEN_WIDTH, int(SCREEN_HEIGHT / 2) + pipe_height, 1)
             pipe_group.add(btm_pipe)
             pipe_group.add(top_pipe)
+            coin = Coin((SCREEN_WIDTH + 200), int(SCREEN_HEIGHT / 2) + random.randint(-200, 200))
+            coin_group.add(coin)
             last_pipe = time_now
 
         # draw and scroll the ground
@@ -218,19 +245,26 @@ while run:
             ground_scroll = 0
 
         pipe_group.update()
+        coin_group.update()
 
     # check for game over
     if game_over == True:
         if button.draw() == True:
             game_over = False
             score = reset_game()
+        if score < 100:
+            draw_text(str("You Lose"), font2, white, int(SCREEN_WIDTH / 2) - 175, 275)
 
     # stop / start game
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            run = False
+             run = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                run = False
         if event.type == pygame.KEYDOWN and flying == False and game_over == False:
-            flying = True
+            if event.key == pygame.K_SPACE:
+                flying = True
 
     pygame.display.flip()
 
