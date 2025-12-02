@@ -254,6 +254,10 @@ while run:
             score = reset_game()
         if score < 100:
             draw_text(str("You Lose"), font2, white, int(SCREEN_WIDTH / 2) - 175, 275)
+            if len(coin_score) == 1:
+                draw_text(str(f"You got {len(coin_score)} coin"), font2, white, int(SCREEN_WIDTH / 2) - 300, 400)
+            else:
+                draw_text(str(f"You got {len(coin_score)} coins"), font2, white, int(SCREEN_WIDTH / 2) - 300, 400)
 
     # stop / start game
     for event in pygame.event.get():
